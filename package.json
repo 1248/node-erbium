@@ -1,0 +1,26 @@
+{
+  "name": "node-erbium",
+  "version": "0.0.1",
+  "author": "Toby Jaffey <toby@1248.io>",
+  "description": "Erbium CoAP bindings for Node.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/1248/node-erbium.git"
+  },
+  "homepage": "http://github.com/1248/node-erbium",
+  "main": "./lib/er.js",
+  "keywords": [
+    "er",
+    "erbium",
+    "coap"
+  ],
+  "engines": {
+    "node": ">=0.6.14"
+  },
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "gypfile": true
+}
