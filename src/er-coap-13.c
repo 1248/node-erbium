@@ -864,11 +864,7 @@ coap_get_header_token(void *packet, const uint8_t **token)
 {
   coap_packet_t *const coap_pkt = (coap_packet_t *) packet;
 
-printf("coap_pkt->token_len=%d\n", coap_pkt->token_len);
-
   if (!IS_OPTION(coap_pkt, COAP_OPTION_TOKEN)) return 0;
-
-printf("HIT!\n");
 
   *token = coap_pkt->token;
   return coap_pkt->token_len;
