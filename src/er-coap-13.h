@@ -243,7 +243,8 @@ typedef struct {
   uint16_t uri_port;
   size_t location_query_len;
   const char *location_query;
-  multi_option_t *uri_path;
+  const char *uri_path;
+  size_t uri_path_len;
   uint16_t observe;
   uint8_t token_len;
   uint8_t token[COAP_TOKEN_LEN];
