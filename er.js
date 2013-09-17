@@ -1,5 +1,13 @@
 var erbium = require('./build/Release/erbium');
 
+var pkt = new erbium.Erbium(new Buffer([0x60,0x45,0x04,0xd2,0xc2,0x00,0x00,0xff,0x68,0x65,0x6c,0x6c,0x6f]));
+
+console.log(pkt.getPayload().toString());
+console.log(pkt.getHeaderContentType());
+console.log(pkt.getHeaderContentType());
+console.log(pkt.getHeaderMID());
+
+process.exit(0);
 
 var obj = new erbium.Erbium(erbium.COAP_TYPE_CON, erbium.COAP_GET, 0);
 /*

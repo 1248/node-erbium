@@ -24,8 +24,8 @@ void Erbium::Init(Handle<Object> target) {
 #define DEFINE_METHOD(X, Y) \
     tpl->PrototypeTemplate()->Set(String::NewSymbol(X), FunctionTemplate::New(Y)->GetFunction());
 
-    DEFINE_METHOD("setPayload", SetPayload);
     DEFINE_METHOD("serialize", Serialize);
+    DEFINE_METHOD("getHeaderMID", GetHeaderMID);
     DEFINE_METHOD("getHeaderContentType", GetHeaderContentType);
     DEFINE_METHOD("setHeaderContentType", SetHeaderContentType);
     DEFINE_METHOD("getHeaderAccept", GetHeaderAccept);
@@ -56,6 +56,8 @@ void Erbium::Init(Handle<Object> target) {
     DEFINE_METHOD("setHeaderObserve", SetHeaderObserve);
     DEFINE_METHOD("getHeaderSize", GetHeaderSize);
     DEFINE_METHOD("setHeaderSize", SetHeaderSize);
+    DEFINE_METHOD("setPayload", SetPayload);
+    DEFINE_METHOD("getPayload", GetPayload);
 
     // Constants
 #define DEFINE_CONST(X) \
@@ -177,6 +179,17 @@ Handle<Value> Erbium::New(const Arguments& args) {
     return args.This();
 }
 
+Handle<Value> Erbium::GetHeaderMID(const Arguments& args) {
+    HandleScope scope;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() != 0) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    return scope.Close(Number::New(coap_get_mid(&obj->pkt_)));
+}
+
+
 Handle<Value> Erbium::SetPayload(const Arguments& args) {
     HandleScope scope;
     Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
@@ -197,6 +210,26 @@ Handle<Value> Erbium::SetPayload(const Arguments& args) {
 
     rc = coap_set_payload(&obj->pkt_, bufferData, bufferLength);
     return scope.Close(Number::New(rc));
+}
+
+Handle<Value> Erbium::GetPayload(const Arguments& args) {
+    HandleScope scope;
+    const uint8_t *data;
+    int length;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() != 0) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    length = coap_get_payload(&obj->pkt_, &data);
+    Buffer *slowBuffer = Buffer::New(length);
+    memcpy(Buffer::Data(slowBuffer), data, length);
+
+    Local<Object> globalObj = Context::GetCurrent()->Global();
+    Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));
+    Handle<Value> constructorArgs[3] = { slowBuffer->handle_, v8::Integer::New(length), v8::Integer::New(0) };
+    Local<Object> actualBuffer = bufferConstructor->NewInstance(3, constructorArgs);
+    return scope.Close(actualBuffer);
 }
 
 Handle<Value> Erbium::Serialize(const Arguments& args) {

@@ -15,8 +15,8 @@ class Erbium : public node::ObjectWrap {
     ~Erbium();
 
     static v8::Handle<v8::Value> New(const v8::Arguments& args);
-    static v8::Handle<v8::Value> SetPayload(const v8::Arguments& args);
     static v8::Handle<v8::Value> Serialize(const v8::Arguments& args);
+    static v8::Handle<v8::Value> GetHeaderMID(const v8::Arguments& args);
     static v8::Handle<v8::Value> GetHeaderContentType(const v8::Arguments& args);
     static v8::Handle<v8::Value> SetHeaderContentType(const v8::Arguments& args);
     static v8::Handle<v8::Value> GetHeaderAccept(const v8::Arguments& args);
@@ -47,6 +47,8 @@ class Erbium : public node::ObjectWrap {
     static v8::Handle<v8::Value> SetHeaderObserve(const v8::Arguments& args);
     static v8::Handle<v8::Value> GetHeaderSize(const v8::Arguments& args);
     static v8::Handle<v8::Value> SetHeaderSize(const v8::Arguments& args);
+    static v8::Handle<v8::Value> SetPayload(const v8::Arguments& args);
+    static v8::Handle<v8::Value> GetPayload(const v8::Arguments& args);
 
     coap_packet_t pkt_;
 };
