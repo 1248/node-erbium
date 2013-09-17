@@ -476,7 +476,7 @@ coap_parse_message(void *packet, uint8_t *data, uint16_t data_len)
   uint8_t *current_option = data + COAP_HEADER_LEN;
 
   memcpy(coap_pkt->token, current_option, coap_pkt->token_len);
-  PRINTF("Token (len %u) [0x%02X%02X%02X%02X%02X%02X%02X%02X]\n", coap_pkt->token_len,
+  printf("Token (len %u) [0x%02X%02X%02X%02X%02X%02X%02X%02X]\n", coap_pkt->token_len,
     coap_pkt->token[0],
     coap_pkt->token[1],
     coap_pkt->token[2],
