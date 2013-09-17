@@ -867,6 +867,8 @@ printf("coap_pkt->token_len=%d\n", coap_pkt->token_len);
 
   if (!IS_OPTION(coap_pkt, COAP_OPTION_TOKEN)) return 0;
 
+printf("HIT!\n");
+
   *token = coap_pkt->token;
   return coap_pkt->token_len;
 }
