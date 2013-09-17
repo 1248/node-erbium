@@ -335,6 +335,14 @@ coap_get_mid(void *packet)
   coap_packet_t *const coap_pkt = (coap_packet_t *) packet;
   return coap_pkt->mid;
 }
+
+uint8_t
+coap_get_type(void *packet)
+{
+  coap_packet_t *const coap_pkt = (coap_packet_t *) packet;
+  return coap_pkt->type;
+}
+
 /*-----------------------------------------------------------------------------------*/
 /*- MEASSAGE PROCESSING -------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------*/

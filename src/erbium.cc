@@ -60,6 +60,7 @@ void Erbium::Init(Handle<Object> target) {
     DEFINE_METHOD("getPayload", GetPayload);
     DEFINE_METHOD("getHeaderStatusCode", GetHeaderStatusCode);
     DEFINE_METHOD("setHeaderStatusCode", SetHeaderStatusCode);
+    DEFINE_METHOD("getHeaderType", GetHeaderType);
 
     // Constants
 #define DEFINE_CONST(X) \
@@ -191,6 +192,15 @@ Handle<Value> Erbium::GetHeaderMID(const Arguments& args) {
     return scope.Close(Number::New(coap_get_mid(&obj->pkt_)));
 }
 
+Handle<Value> Erbium::GetHeaderType(const Arguments& args) {
+    HandleScope scope;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() != 0) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    return scope.Close(Number::New(coap_get_type(&obj->pkt_)));
+}
 
 Handle<Value> Erbium::SetPayload(const Arguments& args) {
     HandleScope scope;
