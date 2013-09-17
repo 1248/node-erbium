@@ -487,9 +487,6 @@ coap_parse_message(void *packet, uint8_t *data, uint16_t data_len)
     coap_pkt->token[7]
   ); /*FIXME always prints 8 bytes */
 
-  if (coap_pkt->token_len > 0)
-    SET_OPTION(coap_pkt, COAP_OPTION_TOKEN);
-
   /* parse options */
   memset(coap_pkt->options, 0, sizeof(coap_pkt->options));
   current_option += coap_pkt->token_len;
@@ -684,9 +681,11 @@ coap_parse_message(void *packet, uint8_t *data, uint16_t data_len)
 
     current_option += option_length;
   } /* for */
+
+  if (coap_pkt->token_len > 0)
+    SET_OPTION(coap_pkt, COAP_OPTION_TOKEN);
+
   PRINTF("-Done parsing-------\n");
-
-
 
   return NO_ERROR;
 }
