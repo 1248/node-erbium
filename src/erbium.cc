@@ -46,6 +46,16 @@ void Erbium::Init(Handle<Object> target) {
     DEFINE_METHOD("setHeaderUriHost", SetHeaderUriHost);
     DEFINE_METHOD("getHeaderUriPath", GetHeaderUriPath);
     DEFINE_METHOD("setHeaderUriPath", SetHeaderUriPath);
+    DEFINE_METHOD("getHeaderUriQuery", GetHeaderUriQuery);
+    DEFINE_METHOD("setHeaderUriQuery", SetHeaderUriQuery);
+    DEFINE_METHOD("getHeaderLocationPath", GetHeaderLocationPath);
+    DEFINE_METHOD("setHeaderLocationPath", SetHeaderLocationPath);
+    DEFINE_METHOD("getHeaderLocationQuery", GetHeaderLocationQuery);
+    DEFINE_METHOD("setHeaderLocationQuery", SetHeaderLocationQuery);
+    DEFINE_METHOD("getHeaderObserve", GetHeaderObserve);
+    DEFINE_METHOD("setHeaderObserve", SetHeaderObserve);
+    DEFINE_METHOD("getHeaderSize", GetHeaderSize);
+    DEFINE_METHOD("setHeaderSize", SetHeaderSize);
 
     // Constants
 #define DEFINE_CONST(X) \
@@ -527,7 +537,6 @@ Handle<Value> Erbium::SetHeaderUriPath(const Arguments& args) {
     v8::String::Utf8Value v8s0(args[0]->ToString());
     std::string ss0 = std::string(*v8s0);
     rc = coap_set_header_uri_path(&obj->pkt_, ss0.c_str());
-printf("SET %s %d\n", ss0.c_str(), rc);
     return scope.Close(Number::New(rc));
 }
 
@@ -535,8 +544,6 @@ Handle<Value> Erbium::GetHeaderUriPath(const Arguments& args) {
     HandleScope scope;
     const uint8_t *data;
     int length;
-
-printf("******\n");
 
     Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
     if (args.Length() != 0) {
@@ -547,17 +554,193 @@ printf("******\n");
     length = coap_get_header_uri_path(&obj->pkt_, (const char **)&data);
     Buffer *slowBuffer = Buffer::New(length);
     memcpy(Buffer::Data(slowBuffer), data, length);
-
-{
-int i;
-for (i=0;i<length;i++)
-printf("* %02X\n", data[i]);
-}
-
     Local<Object> globalObj = Context::GetCurrent()->Global();
     Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));
     Handle<Value> constructorArgs[3] = { slowBuffer->handle_, v8::Integer::New(length), v8::Integer::New(0) };
     Local<Object> actualBuffer = bufferConstructor->NewInstance(3, constructorArgs);
     return scope.Close(actualBuffer);
 }
+
+Handle<Value> Erbium::SetHeaderUriQuery(const Arguments& args) {
+    HandleScope scope;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    int rc;
+
+    if (args.Length() < 1) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    if (!args[0]->IsString()) {
+        ThrowException(Exception::TypeError(String::New("Wrong arguments")));
+        return scope.Close(Undefined());
+    }
+    v8::String::Utf8Value v8s0(args[0]->ToString());
+    std::string ss0 = std::string(*v8s0);
+    rc = coap_set_header_uri_query(&obj->pkt_, ss0.c_str());
+    return scope.Close(Number::New(rc));
+}
+
+Handle<Value> Erbium::GetHeaderUriQuery(const Arguments& args) {
+    HandleScope scope;
+    const uint8_t *data;
+    int length;
+
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() != 0) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+
+    length = coap_get_header_uri_query(&obj->pkt_, (const char **)&data);
+    Buffer *slowBuffer = Buffer::New(length);
+    memcpy(Buffer::Data(slowBuffer), data, length);
+    Local<Object> globalObj = Context::GetCurrent()->Global();
+    Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));
+    Handle<Value> constructorArgs[3] = { slowBuffer->handle_, v8::Integer::New(length), v8::Integer::New(0) };
+    Local<Object> actualBuffer = bufferConstructor->NewInstance(3, constructorArgs);
+    return scope.Close(actualBuffer);
+}
+
+Handle<Value> Erbium::SetHeaderLocationPath(const Arguments& args) {
+    HandleScope scope;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    int rc;
+
+    if (args.Length() < 1) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    if (!args[0]->IsString()) {
+        ThrowException(Exception::TypeError(String::New("Wrong arguments")));
+        return scope.Close(Undefined());
+    }
+    v8::String::Utf8Value v8s0(args[0]->ToString());
+    std::string ss0 = std::string(*v8s0);
+    rc = coap_set_header_location_path(&obj->pkt_, ss0.c_str());
+    return scope.Close(Number::New(rc));
+}
+
+Handle<Value> Erbium::GetHeaderLocationPath(const Arguments& args) {
+    HandleScope scope;
+    const uint8_t *data;
+    int length;
+
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() != 0) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+
+    length = coap_get_header_location_path(&obj->pkt_, (const char **)&data);
+    Buffer *slowBuffer = Buffer::New(length);
+    memcpy(Buffer::Data(slowBuffer), data, length);
+    Local<Object> globalObj = Context::GetCurrent()->Global();
+    Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));
+    Handle<Value> constructorArgs[3] = { slowBuffer->handle_, v8::Integer::New(length), v8::Integer::New(0) };
+    Local<Object> actualBuffer = bufferConstructor->NewInstance(3, constructorArgs);
+    return scope.Close(actualBuffer);
+}
+
+Handle<Value> Erbium::SetHeaderLocationQuery(const Arguments& args) {
+    HandleScope scope;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    int rc;
+
+    if (args.Length() < 1) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    if (!args[0]->IsString()) {
+        ThrowException(Exception::TypeError(String::New("Wrong arguments")));
+        return scope.Close(Undefined());
+    }
+    v8::String::Utf8Value v8s0(args[0]->ToString());
+    std::string ss0 = std::string(*v8s0);
+    rc = coap_set_header_location_query(&obj->pkt_, ss0.c_str());
+    return scope.Close(Number::New(rc));
+}
+
+Handle<Value> Erbium::GetHeaderLocationQuery(const Arguments& args) {
+    HandleScope scope;
+    const uint8_t *data;
+    int length;
+
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() != 0) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+
+    length = coap_get_header_location_query(&obj->pkt_, (const char **)&data);
+    Buffer *slowBuffer = Buffer::New(length);
+    memcpy(Buffer::Data(slowBuffer), data, length);
+    Local<Object> globalObj = Context::GetCurrent()->Global();
+    Local<Function> bufferConstructor = Local<Function>::Cast(globalObj->Get(String::New("Buffer")));
+    Handle<Value> constructorArgs[3] = { slowBuffer->handle_, v8::Integer::New(length), v8::Integer::New(0) };
+    Local<Object> actualBuffer = bufferConstructor->NewInstance(3, constructorArgs);
+    return scope.Close(actualBuffer);
+}
+
+Handle<Value> Erbium::SetHeaderObserve(const Arguments& args) {
+    HandleScope scope;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() < 1) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    if (!args[0]->IsNumber()) {
+        ThrowException(Exception::TypeError(String::New("Wrong arguments")));
+        return scope.Close(Undefined());
+    }
+    coap_set_header_observe(&obj->pkt_, args[0]->NumberValue());
+    return scope.Close(Undefined());
+}
+
+Handle<Value> Erbium::GetHeaderObserve(const Arguments& args) {
+    HandleScope scope;
+    int rc;
+    uint32_t age;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() != 0) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    rc = coap_get_header_observe(&obj->pkt_, &age);
+    if (rc == 1)
+        return scope.Close(Number::New(age));
+    else
+        return scope.Close(Undefined());
+}
+
+Handle<Value> Erbium::SetHeaderSize(const Arguments& args) {
+    HandleScope scope;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() < 1) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    if (!args[0]->IsNumber()) {
+        ThrowException(Exception::TypeError(String::New("Wrong arguments")));
+        return scope.Close(Undefined());
+    }
+    coap_set_header_size(&obj->pkt_, args[0]->NumberValue());
+    return scope.Close(Undefined());
+}
+
+Handle<Value> Erbium::GetHeaderSize(const Arguments& args) {
+    HandleScope scope;
+    int rc;
+    uint32_t age;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() != 0) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    rc = coap_get_header_size(&obj->pkt_, &age);
+    if (rc == 1)
+        return scope.Close(Number::New(age));
+    else
+        return scope.Close(Undefined());
+}
+
 

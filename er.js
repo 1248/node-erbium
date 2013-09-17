@@ -2,6 +2,7 @@ var erbium = require('./build/Release/erbium');
 
 
 var obj = new erbium.Erbium(erbium.COAP_TYPE_CON, erbium.COAP_GET, 0);
+/*
 obj.setHeaderContentType(erbium.APPLICATION_LINK_FORMAT);
 
 console.log(obj.getHeaderContentType(), erbium.APPLICATION_LINK_FORMAT);
@@ -41,10 +42,32 @@ console.log("urihost", obj.getHeaderUriHost());
 console.log("uripath", obj.getHeaderUriPath());
 console.log(obj.setHeaderUriPath("/bob"));
 console.log("uripath", obj.getHeaderUriPath());
+*/
+console.log("uriquery", obj.getHeaderUriQuery());
+obj.setHeaderUriQuery("?a=b");
+console.log("uriquery", obj.getHeaderUriQuery());
+
+console.log("locationpath", obj.getHeaderLocationPath());
+obj.setHeaderLocationPath("xyz");
+console.log("locationpath", obj.getHeaderLocationPath());
+
+console.log("locationquery", obj.getHeaderLocationQuery());
+obj.setHeaderLocationQuery("abc");
+console.log("locationquery", obj.getHeaderLocationQuery());
+
+console.log("observe", obj.getHeaderObserve());
+obj.setHeaderObserve(10);
+console.log("observe", obj.getHeaderObserve());
+
+console.log("size", obj.getHeaderSize());
+obj.setHeaderSize(10);
+console.log("size", obj.getHeaderSize());
 
 obj.setPayload(new Buffer("HHHHH"));
 var buf;
 console.log(buf = obj.serialize());
 
 var o2 = new erbium.Erbium(buf);
+console.log("uriquery", o2.getHeaderUriQuery());
 console.log(o2.serialize());
+
