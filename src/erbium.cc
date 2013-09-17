@@ -58,6 +58,8 @@ void Erbium::Init(Handle<Object> target) {
     DEFINE_METHOD("setHeaderSize", SetHeaderSize);
     DEFINE_METHOD("setPayload", SetPayload);
     DEFINE_METHOD("getPayload", GetPayload);
+    DEFINE_METHOD("getHeaderStatusCode", GetHeaderStatusCode);
+    DEFINE_METHOD("setHeaderStatusCode", SetHeaderStatusCode);
 
     // Constants
 #define DEFINE_CONST(X) \
@@ -774,6 +776,33 @@ Handle<Value> Erbium::GetHeaderSize(const Arguments& args) {
         return scope.Close(Number::New(age));
     else
         return scope.Close(Undefined());
+}
+
+Handle<Value> Erbium::SetHeaderStatusCode(const Arguments& args) {
+    HandleScope scope;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() < 1) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    if (!args[0]->IsNumber()) {
+        ThrowException(Exception::TypeError(String::New("Wrong arguments")));
+        return scope.Close(Undefined());
+    }
+    coap_set_status_code(&obj->pkt_, args[0]->NumberValue());
+    return scope.Close(Undefined());
+}
+
+Handle<Value> Erbium::GetHeaderStatusCode(const Arguments& args) {
+    HandleScope scope;
+    uint8_t code;
+    Erbium* obj = ObjectWrap::Unwrap<Erbium>(args.This());
+    if (args.Length() != 0) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        return scope.Close(Undefined());
+    }
+    code = coap_get_status_code(&obj->pkt_);
+    return scope.Close(Number::New(code));
 }
 
 

@@ -715,19 +715,17 @@ coap_get_post_variable(void *packet, const char *name, const char **output)
   return 0;
 }
 /*-----------------------------------------------------------------------------------*/
-int
-coap_set_status_code(void *packet, unsigned int code)
+void
+coap_set_status_code(void *packet, uint8_t code)
 {
-  if (code <= 0xFF)
-  {
-    ((coap_packet_t *)packet)->code = (uint8_t) code;
-    return 1;
-  }
-  else
-  {
-    return 0;
-  }
+  ((coap_packet_t *)packet)->code = (uint8_t) code;
 }
+uint8_t
+coap_get_status_code(void *packet)
+{
+  return ((coap_packet_t *)packet)->code;
+}
+
 /*-----------------------------------------------------------------------------------*/
 /*- HEADER OPTION GETTERS AND SETTERS -----------------------------------------------*/
 /*-----------------------------------------------------------------------------------*/

@@ -340,7 +340,8 @@ int coap_get_post_variable(void *packet, const char *name, const char **output);
 
 /*-----------------------------------------------------------------------------------*/
 
-int coap_set_status_code(void *packet, unsigned int code);
+void coap_set_status_code(void *packet, uint8_t code);
+uint8_t coap_get_status_code(void *packet);
 
 unsigned int coap_get_header_content_type(void *packet);
 int coap_set_header_content_type(void *packet, unsigned int content_type);
