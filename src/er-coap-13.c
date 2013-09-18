@@ -621,6 +621,11 @@ coap_parse_message(void *packet, uint8_t *data, uint16_t data_len)
         //PRINTF("Uri-Path [%.*s]\n", coap_pkt->uri_path_len, coap_pkt->uri_path);
         //PRINTF("Uri-Path FIXME \"%s\"\n", coap_pkt->uri_path);
         coap_merge_multi_option( (char **) &(coap_pkt->uri_path), &(coap_pkt->uri_path_len), current_option, option_length, '/');
+    {
+        int i;
+        for (i=0;i<option_length;i++)
+            printf("%02x(%c) ", current_option[i], current_option[i]);
+    }
         printf("Uri-Path [%.*s]\n", coap_pkt->uri_path_len, coap_pkt->uri_path);
 
         break;
