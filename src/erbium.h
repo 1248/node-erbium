@@ -2,6 +2,8 @@
 #define ERBIUM_H
 
 #include <node.h>
+#include <string>
+
 extern "C" {
     #include "er-coap-13.h"
 }
@@ -54,6 +56,7 @@ class Erbium : public node::ObjectWrap {
     static v8::Handle<v8::Value> GetHeaderType(const v8::Arguments& args);
 
     coap_packet_t pkt_;
+    std::string path_str;
 };
 
 #endif

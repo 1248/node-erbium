@@ -580,8 +580,8 @@ Handle<Value> Erbium::SetHeaderUriPath(const Arguments& args) {
         return scope.Close(Undefined());
     }
     v8::String::Utf8Value v8s0(args[0]->ToString());
-    std::string ss0 = std::string(*v8s0);
-    rc = coap_set_header_uri_path(&obj->pkt_, ss0.c_str());
+    obj->path_str = std::string(*v8s0);
+    rc = coap_set_header_uri_path(&obj->pkt_, obj->path_str.c_str());
     return scope.Close(Number::New(rc));
 }
 
