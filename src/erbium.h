@@ -57,6 +57,11 @@ class Erbium : public node::ObjectWrap {
 
     coap_packet_t pkt_;
     std::string path_str;
+    std::string proxy_str;
+    std::string host_str;
+    std::string location_str;
+    std::string location_query_str;
+    std::string query_str;
 };
 
 #endif
