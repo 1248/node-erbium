@@ -206,24 +206,6 @@ coap_serialize_array_option(unsigned int number, unsigned int current_number, ui
 }
 /*-----------------------------------------------------------------------------------*/
 static
-size_t
-coap_serialize_multi_option(unsigned int number, unsigned int current_number, uint8_t *buffer, multi_option_t *array)
-{
-  size_t i = 0;
-  multi_option_t * j;
-
-  for (j = array; j != NULL; j= j->next)
-  {
-     i += coap_set_option_header(number - current_number, j->len, &buffer[i]);
-     current_number = number;
-     memcpy(&buffer[i], j->data, j->len);
-     i += j->len;
-  } /* for */
-
-  return i;
-}
-/*-----------------------------------------------------------------------------------*/
-static
 void
 coap_merge_multi_option(char **dst, size_t *dst_len, uint8_t *option, size_t option_len, char separator)
 {
@@ -244,46 +226,6 @@ coap_merge_multi_option(char **dst, size_t *dst_len, uint8_t *option, size_t opt
     /* dst is empty: set to option */
     *dst = (char *) option;
     *dst_len = option_len;
-  }
-}
-
-static
-void
-coap_add_multi_option( multi_option_t **dst, uint8_t *option, size_t option_len)
-{
-  multi_option_t *opt = (multi_option_t *)malloc(sizeof(multi_option_t));
-
-  if (opt)
-  {
-    opt->next = NULL;
-    opt->len = option_len;
-    opt->data = (const char *)option;
-
-    if (*dst)
-    {
-      multi_option_t * i = *dst;
-      while (i->next)
-      {
-        i = i->next;
-      }
-      i->next = opt;
-    }
-    else
-    {
-      *dst = opt;
-    }
-  }
-}
-
-static
-void
-free_multi_option( multi_option_t *dst)
-{
-  if (dst)
-  {
-    multi_option_t *n = dst->next;
-    free(dst);
-    free_multi_option(n);
   }
 }
 
@@ -415,7 +357,7 @@ coap_serialize_message(void *packet, uint8_t *buffer)
   COAP_SERIALIZE_STRING_OPTION(  COAP_OPTION_URI_PATH,       uri_path, '/', "Uri-Path")
   COAP_SERIALIZE_INT_OPTION(    COAP_OPTION_CONTENT_TYPE,   content_type, "Content-Format")
   COAP_SERIALIZE_INT_OPTION(    COAP_OPTION_MAX_AGE,        max_age, "Max-Age")
-  COAP_SERIALIZE_MULTI_OPTION( COAP_OPTION_URI_QUERY,      uri_query, "Uri-Query")
+  COAP_SERIALIZE_STRING_OPTION( COAP_OPTION_URI_QUERY,      uri_query, '&', "Uri-Query")
   COAP_SERIALIZE_ACCEPT_OPTION( COAP_OPTION_ACCEPT,         accept, "Accept")
   COAP_SERIALIZE_STRING_OPTION( COAP_OPTION_LOCATION_QUERY, location_query, '&', "Location-Query")
   COAP_SERIALIZE_BLOCK_OPTION(  COAP_OPTION_BLOCK2,         block2, "Block2")
@@ -465,9 +407,6 @@ coap_status_t
 coap_parse_message(void *packet, uint8_t *data, uint16_t data_len)
 {
   coap_packet_t *const coap_pkt = (coap_packet_t *) packet;
-
-  //free_multi_option(coap_pkt->uri_path);
-  //free_multi_option(coap_pkt->uri_query);
 
   /* Initialize packet */
   memset(coap_pkt, 0, sizeof(coap_packet_t));
@@ -622,21 +561,13 @@ coap_parse_message(void *packet, uint8_t *data, uint16_t data_len)
         PRINTF("Uri-Port [%u]\n", coap_pkt->uri_port);
         break;
       case COAP_OPTION_URI_PATH:
-        /* coap_merge_multi_option() operates in-place on the IPBUF, but final packet field should be const string -> cast to string */
-//        coap_merge_multi_option( (char **) &(coap_pkt->uri_path), &(coap_pkt->uri_path_len), current_option, option_length, 0);
-//        coap_add_multi_option( &(coap_pkt->uri_path), current_option, option_length);
-        //PRINTF("Uri-Path [%.*s]\n", coap_pkt->uri_path_len, coap_pkt->uri_path);
-        //PRINTF("Uri-Path FIXME \"%s\"\n", coap_pkt->uri_path);
         coap_merge_multi_option( (char **) &(coap_pkt->uri_path), &(coap_pkt->uri_path_len), current_option, option_length, '/');
         PRINTF("Uri-Path [%.*s]\n", coap_pkt->uri_path_len, coap_pkt->uri_path);
 
         break;
       case COAP_OPTION_URI_QUERY:
-        /* coap_merge_multi_option() operates in-place on the IPBUF, but final packet field should be const string -> cast to string */
-        // coap_merge_multi_option( (char **) &(coap_pkt->uri_query), &(coap_pkt->uri_query_len), current_option, option_length, '&');
-        coap_add_multi_option( &(coap_pkt->uri_query), current_option, option_length);
-        //PRINTF("Uri-Query [%.*s]\n", coap_pkt->uri_query_len, coap_pkt->uri_query);
-        PRINTF("FIXME\n");
+        coap_merge_multi_option( (char **) &(coap_pkt->uri_query), &(coap_pkt->uri_query_len), current_option, option_length, '&');
+        PRINTF("Uri-Query [%.*s]\n", coap_pkt->uri_query_len, coap_pkt->uri_query);
         break;
 
       case COAP_OPTION_LOCATION_PATH:
@@ -998,36 +929,23 @@ coap_get_header_uri_query(void *packet, const char **query)
 
   if (!IS_OPTION(coap_pkt, COAP_OPTION_URI_QUERY)) return 0;
 
-  *query = NULL; //coap_pkt->uri_query;
-  return 0; //coap_pkt->uri_query_len;
+  *query = coap_pkt->uri_query;
+  return coap_pkt->uri_query_len;
 }
 
 int
 coap_set_header_uri_query(void *packet, const char *query)
 {
-    int length = 0;
-    coap_packet_t *const coap_pkt = (coap_packet_t *) packet;
-
-    free_multi_option(coap_pkt->uri_query);
-    coap_pkt->uri_query = NULL;
-
-    if (query[0]=='?') ++query;
-
-    do
-    {
-        int i = 0;
-
-        while (query[i] != 0 && query[i] != '&') i++;
-        coap_add_multi_option(&(coap_pkt->uri_query), (uint8_t *)query, i);
-
-        if (query[i] == '&') i++;
-        query += i;
-        length += i;
-    } while (query[0] != 0);
-
-    SET_OPTION(coap_pkt, COAP_OPTION_URI_QUERY);
-    return length;
- }
+  coap_packet_t *const coap_pkt = (coap_packet_t *) packet;
+  
+  while (query[0]=='?') ++query;
+  
+  coap_pkt->uri_query = query;
+  coap_pkt->uri_query_len = strlen(query);
+  
+  SET_OPTION(coap_pkt, COAP_OPTION_URI_QUERY);
+  return coap_pkt->uri_query_len;
+}
 /*-----------------------------------------------------------------------------------*/
 int
 coap_get_header_location_path(void *packet, const char **path)
