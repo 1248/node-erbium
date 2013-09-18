@@ -480,14 +480,7 @@ Handle<Value> Erbium::SetHeaderToken(const Arguments& args) {
     Local<Object> bufferObj    = args[0]->ToObject();
     char*         bufferData   = Buffer::Data(bufferObj);
     size_t        bufferLength = Buffer::Length(bufferObj);
-#if 0
     coap_set_header_token(&obj->pkt_, (uint8_t *)bufferData, bufferLength);
-#else
-    char *d = (char *)malloc(bufferLength);
-    memcpy(d, bufferData, bufferLength);
-printf("token_len=%d\n", bufferLength);
-    coap_set_header_token(&obj->pkt_, (uint8_t *)d, bufferLength);
-#endif
     return scope.Close(Undefined());
 }
 
