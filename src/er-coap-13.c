@@ -959,7 +959,7 @@ coap_set_header_uri_path(void *packet, const char *path)
 
     while (path[0]=='/') ++path;
 
-    coap_pkt->uri_path = path;
+    coap_pkt->uri_path = strdup(path);  // FIXME ALERT
     coap_pkt->uri_path_len = strlen(path);
 
     SET_OPTION(coap_pkt, COAP_OPTION_URI_PATH);
