@@ -331,6 +331,7 @@ extern char *coap_error_message;
 
 uint16_t coap_get_mid(void *packet);
 uint8_t coap_get_type(void *packet);
+void coap_set_type(void *packet, uint8_t type);
 
 void coap_init_message(void *packet, coap_message_type_t type, uint8_t code, uint16_t mid);
 size_t coap_serialize_message(void *packet, uint8_t *buffer);

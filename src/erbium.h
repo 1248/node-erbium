@@ -54,6 +54,7 @@ class Erbium : public node::ObjectWrap {
     static v8::Handle<v8::Value> SetHeaderStatusCode(const v8::Arguments& args);
     static v8::Handle<v8::Value> GetHeaderStatusCode(const v8::Arguments& args);
     static v8::Handle<v8::Value> GetHeaderType(const v8::Arguments& args);
+    static v8::Handle<v8::Value> SetHeaderType(const v8::Arguments& args);
 
     coap_packet_t pkt_;
     std::string path_str;

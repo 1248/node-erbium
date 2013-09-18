@@ -343,6 +343,13 @@ coap_get_type(void *packet)
   return coap_pkt->type;
 }
 
+void
+coap_set_type(void *packet, uint8_t type)
+{
+  coap_packet_t *const coap_pkt = (coap_packet_t *) packet;
+  coap_pkt->type = type;
+}
+
 /*-----------------------------------------------------------------------------------*/
 /*- MEASSAGE PROCESSING -------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------*/
