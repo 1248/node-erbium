@@ -2,7 +2,8 @@ Node.js bindings for Erbium CoAP library
 ========================================
 
 Toby Jaffey <toby@1248.io>
-
+https://github.com/1248/node-erbium
+http://1248.io
 
     var erbium = require('node-erbium');
     var pkt = new erbium.Erbium(erbium.COAP_TYPE_CON, erbium.CONTENT_2_05, 0x1234);
@@ -14,10 +15,10 @@ Toby Jaffey <toby@1248.io>
     console.log(parsed.getPayload());
 
  
-Almost entirely undocumented.
 See src/erbium.cc for API.
 
 Methods:
+
     serialize
     getHeaderMID
     getHeaderContentType
@@ -56,7 +57,6 @@ Methods:
     setHeaderStatusCode
     getHeaderType
     setHeaderType
-
 
 
 MIT license.
