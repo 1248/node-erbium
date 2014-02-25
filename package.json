@@ -1,6 +1,6 @@
 {
   "name": "node-erbium",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Toby Jaffey <toby@1248.io>",
   "description": "Erbium CoAP bindings for Node.js",
   "repository": {
